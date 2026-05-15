@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>にゃんみっけ！</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+		body {
+		    margin: 0;
+		    font-family: sans-serif;
+		    color: #3f3333;
+		    background-color: #fff7f3;
+		    background-image:
+		        url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ff8fa3' fill-opacity='0.22'%3E%3Cellipse cx='52' cy='62' rx='14' ry='11'/%3E%3Cellipse cx='35' cy='46' rx='6' ry='8'/%3E%3Cellipse cx='48' cy='38' rx='6' ry='8'/%3E%3Cellipse cx='62' cy='38' rx='6' ry='8'/%3E%3Cellipse cx='75' cy='46' rx='6' ry='8'/%3E%3C/g%3E%3C/svg%3E");
+		    background-size: 140px 140px;
+		}
+		
+		body::before {
+		    content: "";
+		    position: fixed;
+		    inset: 0;
+		    background:
+		        radial-gradient(circle at 12% 20%, rgba(255, 127, 143, 0.18) 0 8px, transparent 9px),
+		        radial-gradient(circle at 80% 15%, rgba(255, 127, 143, 0.16) 0 8px, transparent 9px),
+		        radial-gradient(circle at 88% 70%, rgba(255, 127, 143, 0.16) 0 8px, transparent 9px),
+		        radial-gradient(circle at 18% 85%, rgba(255, 127, 143, 0.16) 0 8px, transparent 9px);
+		    pointer-events: none;
+		    z-index: -1;
+		}
+
+        .page {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 0 80px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #ff7f8f;
+            font-size: 42px;
+            margin: 0;
+        }
+
+        .logo p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+
+        .post-button {
+            background: linear-gradient(135deg, #ff8a9a, #ff6f8f);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 16px 28px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 8px 18px rgba(255, 111, 143, 0.3);
+            cursor: pointer;
+        }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 35px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            margin-bottom: 35px;
+        }
+
+        .hero-photo {
+            height: 330px;
+            border-radius: 28px;
+            background:
+                linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.35)),
+                url("https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?auto=format&fit=crop&w=1200&q=80");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .hero-photo h2 {
+            font-size: 34px;
+            margin: 0 0 10px;
+        }
+
+        .hero-photo p {
+            margin: 4px 0;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .camera-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .upload-card h2 {
+            margin: 0 0 20px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin: 30px 0 18px;
+        }
+
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        .photo-area {
+            height: 210px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .photo1 {
+            background-image: url("https://images.unsplash.com/photo-1561948955-570b270e7c36?auto=format&fit=crop&w=700&q=80");
+        }
+
+        .photo2 {
+            background-image: url("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=700&q=80");
+        }
+
+        .photo3 {
+            background-image: url("https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=700&q=80");
+        }
+
+        .photo4 {
+            background-image: url("https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=700&q=80");
+        }
+
+        .post-content {
+            padding: 18px;
+        }
+
+        .meta {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .memo {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .like {
+            color: #ff6f8f;
+            font-weight: bold;
+        }
+
+        .tags {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: white;
+            border-radius: 20px;
+            padding: 10px 18px;
+            color: #555;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+		
+		.upload-card form {
+		    display: flex;
+		    flex-direction: column;
+		    gap: 15px;
+		}
+
+		.upload-card input,
+		.upload-card textarea {
+		    width: 100%;
+		    border: none;
+		    border-radius: 18px;
+		    padding: 16px;
+		    background: #f7f7f7;
+		    font-size: 16px;
+		}
+
+		.upload-card textarea {
+		    min-height: 120px;
+		    resize: none;
+		}
+		
+		.photo-scroll {
+		    display: flex;
+		    overflow-x: auto;
+		    scroll-snap-type: x mandatory;
+		}
+
+		.photo-area {
+		    min-width: 100%;
+		    height: 320px;
+		    background-size: cover;
+		    background-position: center;
+		    scroll-snap-align: start;
+		}
+
+		.delete-button {
+		    margin-top: 15px;
+		    border: none;
+		    background: #ffd6dc;
+		    color: #c45b6d;
+		    padding: 10px 18px;
+		    border-radius: 20px;
+		    cursor: pointer;
+		    font-weight: bold;
+		}
+
+		.post-card {
+		    background: white;
+		    border-radius: 28px;
+		    overflow: hidden;
+		    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+		}
+
+		.post-grid {
+		    display: grid;
+		    grid-template-columns: repeat(2, 1fr);
+		    gap: 24px;
+		}
+
+		@media screen and (max-width: 700px) {
+
+		    .post-grid {
+		        grid-template-columns: 1fr;
+		    }
+
+		    .photo-area {
+		        height: 280px;
+		    }
+		}
+
+        @media screen and (max-width: 700px) {
+            .page {
+                width: 92%;
+                padding-top: 20px;
+            }
+
+            header {
+                display: block;
+                text-align: center;
+            }
+
+            .logo h1 {
+                font-size: 38px;
+            }
+
+            .post-button {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 18px;
+                border-radius: 28px;
+            }
+
+            .hero-photo {
+                height: 260px;
+            }
+
+            .hero-photo h2 {
+                font-size: 28px;
+            }
+
+            .post-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-area {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <header>
+        <div class="logo">
+            <h1>にゃんみっけ！🐾</h1>
+            <p>見つけた野良猫をみんなで共有しよう</p>
+        </div>
+
+        <button class="post-button">📷 写真を投稿する</button>
+    </header>
+
+    <section class="hero">
+        <div class="hero-photo">
+            <h2>今日のみっけ！🐾</h2>
+            <p>📍 福岡県 中間市</p>
+            <p>🕒 2026.05.18</p>
+        </div>
+
+		<div class="upload-card">
+
+		    <form action="/add" method="post" enctype="multipart/form-data">
+
+		        <div class="camera-icon">📷</div>
+
+		        <h2>
+		            野良猫をみつけたら<br>
+		            写真を投稿しよう！
+		        </h2>
+
+		        <input type="file"
+		               name="photos"
+		               accept="image/*"
+		               multiple
+		               required>
+
+		        <input type="text"
+		               name="place"
+		               placeholder="📍 場所">
+
+		        <textarea name="memo"
+		                  placeholder="💬 ひとこと"></textarea>
+
+		        <button class="post-button" type="submit">
+		            写真を投稿する
+		        </button>
+
+		    </form>
+
+		</div>
+    </section>
+
+    <h2 class="section-title">🐾 みんなのみっけ！</h2>
+
+	<section class="post-grid">
+
+	    <div class="post-card"
+	         th:each="post : ${posts}">
+
+	        <div class="photo-scroll">
+
+	            <div class="photo-area"
+
+	                 th:each="photo :
+	                 ${photoRepository.findByPostId(post.id)}"
+
+	                 th:style="'background-image:url('
+	                 + ${photo.imageUrl}
+	                 + ');'">
+	            </div>
+
+	        </div>
+
+	        <div class="post-content">
+
+	            <div class="meta">
+
+	                📍 <span th:text="${post.place}"></span><br>
+
+	                🕒 <span th:text="${post.createdAt}"></span>
+
+	            </div>
+
+	            <div class="memo"
+	                 th:text="${post.memo}">
+	            </div>
+
+	            <form action="/delete" method="post">
+
+	                <input type="hidden"
+	                       name="id"
+	                       th:value="${post.id}">
+
+	                <button class="delete-button"
+	                        type="submit">
+
+	                    削除
+
+	                </button>
+
+	            </form>
+
+	        </div>
+
+	    </div>
+
+	</section>
+
+    <div class="tags">
+        <span class="tag">すべて</span>
+        <span class="tag">公園</span>
+        <span class="tag">駅前</span>
+        <span class="tag">住宅街</span>
+        <span class="tag">お店の裏</span>
+    </div>
+
+</div>
+
+</body>
+</html>
