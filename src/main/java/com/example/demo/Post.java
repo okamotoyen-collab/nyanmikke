@@ -7,6 +7,25 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Post {
+	private String tag;
+
+	private int likes;
+	
+	public String getTag() {
+	    return tag;
+	}
+
+	public void setTag(String tag) {
+	    this.tag = tag;
+	}
+
+	public int getLikes() {
+	    return likes;
+	}
+
+	public void setLikes(int likes) {
+	    this.likes = likes;
+	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
