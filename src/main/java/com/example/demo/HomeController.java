@@ -31,13 +31,21 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(
+            @RequestParam(required = false) String tag,
+            Model model) {
 
-        List<Post> posts =
-                postRepository.findAllByOrderByIdDesc();
+        List<Post> posts;
+
+        if (tag == null || tag.equals("すべて")) {
+            posts = postRepository.findAllByOrderByIdDesc();
+        } else {
+            posts = postRepository.findByTagOrderByIdDesc(tag);
+        }
 
         model.addAttribute("posts", posts);
         model.addAttribute("photoRepository", photoRepository);
+        model.addAttribute("selectedTag", tag);
 
         return "index";
     }
@@ -47,12 +55,15 @@ public class HomeController {
 
             @RequestParam("photos") MultipartFile[] photos,
             @RequestParam String place,
+            @RequestParam String tag,
             @RequestParam String memo) throws IOException {
 
         Post post = new Post();
 
         post.setPlace(place);
         post.setMemo(memo);
+        post.setTag(tag);
+        post.setLikes(0);
 
         String now = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
@@ -101,5 +112,28 @@ public class HomeController {
         postRepository.deleteById(id);
 
         return "redirect:/";
+    }
+    @PostMapping("/like")
+    public String likePost(@RequestParam Long id) {
+
+        Post post = postRepository.findById(id).orElse(null);
+
+        if (post != null) {
+            post.setLikes(post.getLikes() + 1);
+            postRepository.save(post);
+        }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/detail")
+    public String detail(@RequestParam Long id, Model model) {
+
+        Post post = postRepository.findById(id).orElse(null);
+
+        model.addAttribute("post", post);
+        model.addAttribute("photos", photoRepository.findByPostId(id));
+
+        return "detail";
     }
 }
