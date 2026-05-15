@@ -267,6 +267,31 @@ footer {
     margin-top: 38px;
     color: #777;
 }
+.tag,
+.detail-link {
+    text-decoration: none;
+}
+
+.like-button {
+    border: none;
+    background: #fff0f3;
+    color: #ff6f8f;
+    border-radius: 18px;
+    padding: 8px 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.detail-link {
+    color: #ff6f8f;
+    font-weight: bold;
+}
+
+.meta a {
+    color: #ff6f8f;
+    text-decoration: none;
+    font-weight: bold;
+}
 
 @media screen and (max-width: 800px) {
     .page {
@@ -348,8 +373,18 @@ footer {
                 <h2>野良猫をみつけたら<br>写真を投稿しよう！</h2>
 
                 <input type="file" name="photos" accept="image/*" multiple required>
-                <input type="text" name="place" placeholder="📍 場所" required>
-                <textarea name="memo" placeholder="💬 ひとこと" required></textarea>
+				<input type="text" name="place" placeholder="📍 場所" required>
+
+				<select name="tag" required>
+				    <option value="">🐾 タグを選択</option>
+				    <option value="公園">公園</option>
+				    <option value="駅前">駅前</option>
+				    <option value="住宅街">住宅街</option>
+				    <option value="お店の裏">お店の裏</option>
+				    <option value="その他">その他</option>
+				</select>
+
+				<textarea name="memo" placeholder="💬 ひとこと" required></textarea>
 
                 <button class="post-button" type="submit">📷 写真を投稿する</button>
             </form>
@@ -374,19 +409,36 @@ footer {
 
             <div class="post-content">
                 <div class="meta">
+					🏷️ <span th:text="${post.tag}"></span><br>
+					<a th:href="'https://www.google.com/maps/search/?api=1&query=' + ${post.place}"
+					   target="_blank">
+					   🗺️ 地図で見る
+					</a>
                     📍 <span th:text="${post.place}"></span><br>
                     🕒 <span th:text="${post.createdAt}"></span>
                 </div>
 
                 <div class="memo" th:text="${post.memo}"></div>
 
-                <div class="card-bottom">
-                    <div class="like">♡ みっけ</div>
+				<div class="card-bottom">
 
-                    <form action="/delete" method="post">
-                        <input type="hidden" name="id" th:value="${post.id}">
-                        <button class="delete-button" type="submit">削除</button>
-                    </form>
+				    <form action="/like" method="post">
+				        <input type="hidden" name="id" th:value="${post.id}">
+				        <button class="like-button" type="submit">
+				            ♡ <span th:text="${post.likes}"></span>
+				        </button>
+				    </form>
+
+				    <a class="detail-link"
+				       th:href="@{/detail(id=${post.id})}">
+				        詳細
+				    </a>
+
+				    <form action="/delete" method="post">
+				        <input type="hidden" name="id" th:value="${post.id}">
+				        <button class="delete-button" type="submit">削除</button>
+				    </form>
+
                 </div>
             </div>
 
@@ -394,14 +446,14 @@ footer {
 
     </section>
 
-    <div class="tags">
-        <span class="tag active">🐾 すべて</span>
-        <span class="tag">🐾 公園</span>
-        <span class="tag">🐾 駅前</span>
-        <span class="tag">🐾 住宅街</span>
-        <span class="tag">🐾 お店の裏</span>
-        <span class="tag">🐾 その他</span>
-    </div>
+	<div class="tags">
+	    <a class="tag active" href="/">🐾 すべて</a>
+	    <a class="tag" href="/?tag=公園">🐾 公園</a>
+	    <a class="tag" href="/?tag=駅前">🐾 駅前</a>
+	    <a class="tag" href="/?tag=住宅街">🐾 住宅街</a>
+	    <a class="tag" href="/?tag=お店の裏">🐾 お店の裏</a>
+	    <a class="tag" href="/?tag=その他">🐾 その他</a>
+	</div>
 
     <footer>
         <p>にゃんみっけ！🐾</p>
